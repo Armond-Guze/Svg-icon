@@ -1,14 +1,14 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const path = require('path');
-const shapes = require('./lib/shapes');
+const { Circle, Square, Triangle } = require('./lib/shapes');
 
 const questions = [
     {
         type: 'input',
         name: 'text',
         message: 'Enter up to 3 characters to start your svg.logo.' ,
-        validate: (input) => input.length >= 3
+        validate: (input) => input.length <= 3
     }, {
         type: 'input',
         name: 'text-color',
@@ -33,7 +33,7 @@ function init() {
     inquirer.prompt(questions).then((responses) => {
         console.log('Generating logo..');
         console.log(responses)
-        writeToFile('svg.logo', Shape(responses))
+        writeToFile('logo.svg', Shape(responses))
     })
 };
 
