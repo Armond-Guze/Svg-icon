@@ -8,7 +8,7 @@ const questions = [
         type: 'input',
         name: 'text',
         message: 'Enter up to 3 characters to start your svg.logo.' ,
-        validate: (input) => input.length <= 3
+        validate: (input) => input.length >= 3
     }, {
         type: 'input',
         name: 'text-color',
@@ -33,7 +33,7 @@ function init() {
     inquirer.prompt(questions).then((responses) => {
         console.log('Generating logo..');
         console.log(responses)
-        writeToFile('svg.logo',shapes(responses))
+        writeToFile('svg.logo', Shape(responses))
     })
 };
 
