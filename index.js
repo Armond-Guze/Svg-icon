@@ -3,11 +3,34 @@ const fs = require('fs');
 const path = require('path');
 const { Circle, Square, Triangle } = require('./lib/shapes');
 
+class Svg {
+    constructor() {
+        this.textElement = '';
+        this.shapeElement = '';
+        this.color = '';
+    }
+    render() {
+        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200" fill="${this.color}">
+                   ${this.textElement}
+                   ${this.shapeElement}
+               </svg>`;
+    }
+    setTextElement(text, color) {
+        this.textElement = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`;
+    }
+    setShapeElement(shape) {
+        this.shapeElement = shape.render();
+    }
+    setColor(color) {
+        this.color = color;
+    }
+}
+
 const questions = [
     {
         type: 'input',
         name: 'text',
-        message: 'Enter up to 3 characters to start your svg.logo.' ,
+        message: 'Enter up to 3 characters to start your svg.logo.',
         validate: (input) => input.length <= 3
     }, {
         type: 'input',
@@ -22,19 +45,39 @@ const questions = [
         type: 'input',
         name: 'shape-color',
         message: 'What color do you want your shape logo to be.'
-    }, 
-]
+    },
+];
 
 function writeToFile(fileName, data) {
-    return fs.writeFileSync(path.join(process.cwd(), fileName + '.md'), data);
+    fs.writeFileSync(path.join(process.cwd(), fileName), data);
 }
 
 function init() {
     inquirer.prompt(questions).then((responses) => {
-        console.log('Generating logo..');
-        console.log(responses)
-        writeToFile('logo.svg', Shape(responses))
-    })
-};
+        console.log('Generated logo.svg');
+        console.log(responses);
 
-init()
+        let selectedShape;
+        const shapeName = responses['shape-name'][0];
+        if (shapeName === 'circle') {
+            selectedShape = new Circle();
+        } else if (shapeName === 'triangle') {
+            selectedShape = new Triangle();
+        } else if (shapeName === 'square') {
+            selectedShape = new Square();
+        } else {
+            console.error('Invalid shape selected');
+            return;
+        }
+
+        selectedShape.setColor(responses['shape-color']);
+        const svg = new Svg();
+        svg.setColor(responses['text-color']);
+        svg.setTextElement(responses.text, responses['text-color']);
+        svg.setShapeElement(selectedShape);
+
+        writeToFile('logo.svg', svg.render());
+    });
+}
+
+init();
