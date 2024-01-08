@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { Circle, Square, Triangle } = require('./lib/shapes');
 
+// creating blueprint for shapes, text and color values
 class Svg {
     constructor() {
         this.textElement = '';
@@ -26,6 +27,7 @@ class Svg {
     }
 }
 
+// questions that pop-up using inquirer
 const questions = [
     {
         type: 'input',
@@ -52,6 +54,7 @@ function writeToFile(fileName, data) {
     fs.writeFileSync(path.join(process.cwd(), fileName), data);
 }
 
+// function that generates logo and write it to logo.svg file
 function init() {
     inquirer.prompt(questions).then((responses) => {
         console.log('Generated logo.svg');
